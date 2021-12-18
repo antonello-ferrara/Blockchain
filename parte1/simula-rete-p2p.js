@@ -82,7 +82,7 @@ funzione asincrona che monitora gli eventi generari dall'istanza della classe sw
 //invia un messaggio a tutti i nodi della rete ogni 5 sec
 setInterval(function(){
     let date=new Date();
-    writeMessageToPeers(`DataOra Peer ${myPeerId}`, date.toLocaleDateString()+" "+date.toLocaleTimeString());
+    writeMessageToPeers(`DataOra`, date.toLocaleDateString()+" "+date.toLocaleTimeString());
 }, 5000);
 
 
