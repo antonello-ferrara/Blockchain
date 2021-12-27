@@ -25,7 +25,7 @@ export class MyBlockchain
         this.rawTrx=null;
         this.targetDifficulty=0x1d00ffff;
         this.nonce=2083236893;
-        this.blockHeader =new BlockHeader ( 1,this.prevBlockHeader,this.merkleRoot,moment.unix(), this.targetDifficulty, this.nonce );//moment.unix():ritorna il nr di sec dalla Unix Epoch (mezzanotte del 1/1/1970)et block =;
+        this.blockHeader =new BlockHeader ( 1, this.prevBlockHeader, this.merkleRoot, moment().format("X"), this.targetDifficulty, this.nonce );//moment.unix():ritorna il nr di sec dalla Unix Epoch (mezzanotte del 1/1/1970)et block =;
         this.blockchain = [];
         
         this.blockchain.push (this.getGenesisBlock ());

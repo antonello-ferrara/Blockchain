@@ -105,15 +105,13 @@ funzione asincrona che monitora gli eventi generati dall'istanza della classe sw
                     myBlockchain.addBlock(JSON.parse(JSON.stringify(message.data)));
                     console.log(JSON.stringify(myBlockchain.blockchain));
                     let nextBlockIndex = myBlockchain.getLatestBlock().index+1;
-
-                    console.log(` *** Richiesta blocco successivo con indice ${nextBlockIndex} ***` );
                     writeMessageToPeers(MessageType.REQUEST_BLOCK, {index: nextBlockIndex});
                     console.log('*** Ricezione blocco FINE ***');
 
                     break;
             }
 
-        });
+        });//end switch
 
         conn.on('close', () => {
             console.log(`Connessione #${seq} chiusa verso il nodo: ${peerId}`);
@@ -140,7 +138,7 @@ setInterval(function(){
 }, 5000);
 
 
-//invia un messaggio a tutti i nodi della rete
+//invia un messaggio a tutti i nodi della rete Parte2
 function writeMessageToPeers (type, data)  {
     
     for (let id in peers) {
