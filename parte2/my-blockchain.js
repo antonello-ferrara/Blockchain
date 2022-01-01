@@ -20,7 +20,7 @@ export class MyBlockchain
     constructor()
     {
         
-        this.merkleRoot = 0x1bc3300000000000000000000000000000000000000000000;
+        this.merkleRoot = "D3C551A6FF92CF0A016140211303A21C3092A1E49986DDA518420FE11DFFA92D";
         this.prevBlockHeader = 0;
         this.rawTrx=null;
         this.targetDifficulty=0x1d00ffff;
