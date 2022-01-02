@@ -82,40 +82,52 @@ funzione array asincrona che monitora gli eventi generati dall'istanza della cla
 
 
         conn.on('data', data => {
-            let message = JSON.parse(data);
+        
+            try{
+                message = JSON.parse(data);
+            }
+            catch(e){
+                console.log("on data error:"+data);
+                return;
+            }
+           
+            
+            
+            /*
             console.log('*** Avvio Ricezione Messaggi ***');
             console.log('Dal nodo: ' + peerId.toString('hex'));
             console.log('Al nodo: ' + peerId.toString(message.to));
             console.log('Nodo corrente: ' + myPeerId.toString('hex'));
             console.log('Tipo messaggio: ' + JSON.stringify(message.type));
-            //console.log('Contenuto del messaggio: ' + JSON.stringify(message.data));
             console.log('*** Fine Ricezione Messaggi ***');
+            */
 
-            //Switch del tipo di messaggio ricevuto (Parte2) 
+            //Parte2: aggiunto switch del tipo di messaggio ricevuto 
             switch (message.type) {
                 case MessageType.REQUEST_BLOCK:
-                   //Riceve da un nodo la richiesta di trasmissione del blocco con indice contenuto nel messaggio
+                    //Parte2:Riceve da un nodo la richiesta di trasmissione del blocco con indice contenuto nel messaggio
+                    
                     console.log('*** Richiesta blocco INZIO ***');
                     let requestedIndex = (JSON.parse(JSON.stringify(message.data))).index;
                     let requestedBlock = myBlockchain.getBlock(requestedIndex);
-                    
+
                     if (requestedBlock)
                         writeMessageToPeerToId(peerId.toString('hex'), MessageType.RECEIVE_NEXT_BLOCK, requestedBlock);
                     else
                         console.warn(`Blocco con indice ${requestedIndex} non trovato!`);
-                    
+
                     console.log('*** Richiesta blocco FINE ***');
                     break;
 
                 case MessageType.RECEIVE_NEXT_BLOCK:
 
-                    //Chiede il blocco successivo ai nodi della rete
-                    console.log('*** Ricezione blocco INZIO ***');
+                    //Parte2:Chiede il blocco successivo ai nodi della rete
+                    //console.log('*** Ricezione blocco INZIO ***');
                     myBlockchain.addBlock(JSON.parse(JSON.stringify(message.data)));
-                    console.log(JSON.stringify(myBlockchain.blockchain));
-                    let nextBlockIndex = myBlockchain.getLatestBlock().index+1;
-                    writeMessageToPeers(MessageType.REQUEST_BLOCK, {index: nextBlockIndex});
-                    console.log('*** Ricezione blocco FINE ***');
+                    //console.log(JSON.stringify(myBlockchain.blockchain));
+                    let nextBlockIndex = myBlockchain.getLatestBlock().index + 1;
+                    writeMessageToPeers(MessageType.REQUEST_BLOCK, { index: nextBlockIndex });
+                    //console.log('*** Ricezione blocco FINE ***');
 
                     break;
 
@@ -124,7 +136,9 @@ funzione array asincrona che monitora gli eventi generati dall'istanza della cla
                 case MessageType.REQUEST_ALL_REGISTER_MINERS:
 
                     console.log('*** Trasmette i nodi miners ***' + message.to);
-                    writeMessageToPeerToId(peerId.toString('hex'),MessageType.REGISTER_MINER, miner.registeredMiners);
+                    writeMessageToPeers(MessageType.REGISTER_MINER, miner.registeredMiners);
+                    //miner.register( JSON.parse(JSON.stringify(message.data)) );
+                    
 
                     break;
                 case MessageType.REGISTER_MINER:
@@ -167,12 +181,12 @@ setInterval(function () {
 }, 5000);
 
 //Parte3:funzione eseguita una volta sola dopo 5sec che chiede i miners agli nodi
-setInterval(function () {
+// setInterval(function () {
 
-    console.log('***  Richiesta nodi miners ***')
-    writeMessageToPeers(MessageType.REQUEST_ALL_REGISTER_MINERS, null);
+//     console.log('***  Richiesta nodi miners ***')
+//     writeMessageToPeers(MessageType.REQUEST_ALL_REGISTER_MINERS, null);
 
-}, 7000);
+// }, 7000);
 
 //Parte2:invia un messaggio a tutti i nodi della rete 
 function writeMessageToPeers(type, data) {
