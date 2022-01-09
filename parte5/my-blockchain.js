@@ -65,8 +65,9 @@ export class MyBlockchain
 
     //Ritorna il blocco nella posizione index della catena
     getBlock (index) {
+        this.leveldb.getBlock ( index );
          return (this.blockchain.length - 1 >= index) ? this.blockchain[index] : null;
-    };
+    }
     
     //Parte4: genera un nuovo blocco e lo salva nel db
     generateNextBlock (txns) {

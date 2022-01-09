@@ -7,52 +7,110 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+
 export class Db{
 
     db;
+    lastIndex=0;
 
-    constructor(dbName){
+    constructor(){
 
+        var options = {   
+            //keyEncoding: 'binary',
+            valueEncoding: 'json'
+        };
+
+        let idx=0;
         const dirname = path.dirname(fileURLToPath(import.meta.url));
-        let dbPath = `${dirname}\\db\\${dbName}`;
+        let dbPath = `${dirname}\\db\\peer_${idx}`;
 
-        if ( !fs.existsSync(dbPath) ){
-            fs.mkdirSync(dbPath);   
+        while( fs.existsSync(dbPath) ){
+
+            idx++;
+            dbPath = `${dirname}\\db\\peer_${idx}`;
+
         }
-        this.db = levelDb(dbPath);
-        console.log ("DB creato nel percorso "+dbPath);
+        
+        console.log("dbPath"+dbPath);
+        fs.mkdirSync(dbPath);
+        this.db = levelDb(dbPath, options);
+        this.db.open();
+
+        if (this.db.isOpen())
+            console.log("Connessione db ok!");
 
     }
 
+    //block.index:chiave
+    //block:valore
     putBlock(block) {
 
         let instance=this;
-        //block.index:chiave
-        //block:valore
-        this.db.put( block.index, JSON.stringify(block), function (err) {
+        this.db.put( block.index, block, function (err) {
 
-            if (err)
-                console.log(`db.put ha generato un errore: ${err}`);
+            if (err){
+                console.log(`[db.put] ha generato un errore: ${err}`);
+                return;
+            }
             else{
 
-                console.log(`Comando db.put eseguito per il blocco con indice ${block.index}`);
-                instance.getBlock ( block.index );
-
-            }
+                instance.lastIndex=block.index;
+                console.log(`[db.put] inserito blocco con indice ${instance.lastIndex}`);
+                //instance.getBlock ( instance.lastIndex );
                 
+            }                
         });
 
+        
     }
 
 
    getBlock(key) {
 
-        this.db.get(key, function(err, value) {    
+        let rValue;
+        let instance=this;
+
+        this.db.get(key-1, function(err, value) {  
+
             if (err) {  
-                console.log(`La lettura del valore con indice ${key} ha generato un eccezione: ${err}`);  
+
+                console.log(`[getBlock] ha generato un eccezione: ${err}`);  
+                instance.rValue = "";
+
             }  
-            console.log(value);  
-          });
+            else{
+                instance.rValue = value ;  
+            }
+
+        });
+    
+        console.log( "[getBlock] "+rValue );
+        return rValue;
+    }
+
+    //TODO:Ripristino la catena da db
+    getAllBlocks(){
+
+        let result="";
+        let idx=0;  
+        let blocks=[];
+
+        
+        do{
+            
+            result = this.getBlock(idx);
+            
+            if (result!=undefined&&result!==""){
+
+                blocks.push(this.result);
+                idx++;
+
+            }             
+            
+        }
+        while(result!=undefined&&result!=="")
+        
+        return blocks;
 
     }
 

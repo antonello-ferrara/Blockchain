@@ -266,4 +266,3 @@ function sendMessage(id, type, data) {
         }
     ));
 };
-
