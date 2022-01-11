@@ -17,8 +17,6 @@ export class Miner{
 
     register(miners){
 
-        console.log(miners);
-
         if (miners==null)
             return;
 
@@ -38,9 +36,10 @@ export class Miner{
 
         });
 
+        
         console.log("*** Elenco miners registrati ***");
         console.log(this.registeredMiners);
-
+        
     }
 
     unregister (id){
@@ -48,7 +47,7 @@ export class Miner{
         let index = this.registeredMiners.indexOf(id);
         if (index > -1){
             this.registeredMiners.splice(index, 1);
-            console.log(`Miner con indice ${index} rimosso`);
+            console.log(`[unregister] miner con indice ${index} rimosso`);
         }
 
     }

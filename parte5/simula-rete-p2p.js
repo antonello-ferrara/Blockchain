@@ -20,15 +20,15 @@ import { MyBlockchain } from './my-blockchain.js';//Parte2: rif alla classe MyBl
 import { Miner } from './miner.js';//Parte3
 import { Transaction } from './transaction.js';//Parte4 
 
-const myPeerId = randomBytes(32);
-console.log(`Nodo corrente: ${myPeerId.toString('hex')}`);
 
 const peers = {};//definiamo come costante per evitare che i rif dei nodi possano variare
 let connSeq = 0;
 let channel = 'BlockchainChannel';
-let myBlockchain = new MyBlockchain(myPeerId.toString('hex'));
 let miner = new Miner();//parte4
 
+const myPeerId = randomBytes(32);
+console.log(`Nodo corrente: ${myPeerId.toString('hex')}`);
+let myBlockchain = new MyBlockchain(myPeerId.toString('hex'));
 
 //Parte2: Var dei tipi di messaggi scambiati tra i nodi 
 let MessageType = {
@@ -44,6 +44,7 @@ let MessageType = {
 let curPeer=[];
 curPeer.push(myPeerId.toString('hex'));
 miner.register ( curPeer );
+
 
 
 const config = defaults({
@@ -84,7 +85,15 @@ funzione array asincrona che monitora gli eventi generati dall'istanza della cla
 
 
         conn.on('data', data => {
-            let message = JSON.parse(data);
+            
+            let message ="";
+            try{
+                message = JSON.parse(data);
+            }
+            catch(exc){
+                return;
+            }
+            
             console.log('*** Avvio Ricezione Messaggi ***');
             console.log('Dal nodo: ' + peerId.toString('hex'));
             console.log('Al nodo: ' + peerId.toString(message.to));
@@ -103,8 +112,7 @@ funzione array asincrona che monitora gli eventi generati dall'istanza della cla
                     
                     if (requestedBlock)
                         writeMessageToPeerToId(peerId.toString('hex'), MessageType.RECEIVE_NEXT_BLOCK, requestedBlock);
-                    else
-                        console.warn(`Blocco con indice ${requestedIndex} non trovato!`);
+                    
                     
                     console.log('*** Richiesta blocco FINE ***');
                     break;

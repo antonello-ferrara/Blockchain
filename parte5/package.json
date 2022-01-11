@@ -3,8 +3,8 @@
     "dependencies": {
         "crypto": "^1.0.1",
         "crypto-js": "^4.1.1",
-        "dat-swarm-defaults": "^1.0.2",
-        "discovery-swarm": "^5.1.0",
+        "dat-swarm-defaults": "^1.0.3",
+        "discovery-swarm": "^5.1.4",
         "file-system": "^2.2.2",
         "get-port": "^6.0.0",
         "level": "^7.0.1",
