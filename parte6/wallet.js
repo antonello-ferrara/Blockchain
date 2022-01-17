@@ -15,7 +15,7 @@ export class Wallet {
 
         this.publicAddress=peerId;
         let dirname = path.dirname(fileURLToPath(import.meta.url));
-        let privateKeyLocation = `${dirname}/wallet/pk_${peerId}`;
+        let privateKeyLocation = `${dirname}/wallet/privatekey`;
         this.ec = new elliptic.ec('secp256k1');
         let privateKey;
         let publicKey;
